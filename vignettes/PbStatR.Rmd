@@ -1,0 +1,74 @@
+---
+title: "Getting started with PbStatR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with PbStatR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup}
+library(PbStatR)
+```
+
+## Genetic variability from an RCBD
+
+```{r}
+set.seed(1)
+df <- data.frame(
+  gen = rep(paste0("G", 1:5), each = 3),
+  rep = rep(1:3, times = 5),
+  yld = rnorm(15, 50, 5)
+)
+
+pb_anova(df, "yld", "gen", "rep", design = "rcbd")$anova
+pb_genetic_params(df, "yld", "gen", "rep")
+```
+
+## Correlation and path analysis
+
+```{r}
+df2 <- data.frame(t1 = rnorm(30), t2 = rnorm(30), yld = rnorm(30))
+pb_correlation(df2, c("t1", "t2", "yld"))
+pb_path_analysis(df2, "yld", c("t1", "t2"))
+```
+
+## Post-hoc mean comparisons
+
+```{r, eval = FALSE}
+df3 <- data.frame(
+  trt = rep(paste0("T", 1:4), each = 5),
+  blk = rep(1:5, times = 4),
+  y = c(rnorm(5, 10), rnorm(5, 13), rnorm(5, 16), rnorm(5, 11))
+)
+pb_posthoc(df3, "y", "trt", "blk", method = "duncan")$groups
+pb_assumptions(df3, "y", "trt")
+```
+
+## Multivariate analysis and figures
+
+```{r, eval = FALSE}
+res <- pb_pca(iris, traits = names(iris)[1:4], groups = "Species")
+res$plots$biplot
+pb_heatmap(iris, traits = names(iris)[1:4])
+```
+
+## Genomic selection
+
+```{r, eval = FALSE}
+G  <- pb_grm(marker_matrix)
+gs <- pb_gblup(y = pheno, M = marker_matrix, cv_folds = 5)
+gs$cv_accuracy
+```
+
+## Breeding pipeline simulation
+
+```{r, eval = FALSE}
+sim <- pb_sim_founders(n_founders = 100, h2 = 0.3)
+run <- pb_sim_pipeline(sim, cycles = 15, method = "genomic")
+pb_plot_gain(run)
+```
