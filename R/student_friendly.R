@@ -131,12 +131,17 @@ pb_help <- function() {
 }
 
 .plot_box <- function(data, trait, genotype) {
+  n <- length(unique(data[[genotype]]))
   ggplot2::ggplot(data, ggplot2::aes(x = stats::reorder(.data[[genotype]],
                     .data[[trait]], FUN = stats::median),
                     y = .data[[trait]], fill = .data[[genotype]])) +
-    ggplot2::geom_boxplot(show.legend = FALSE) +
-    ggplot2::labs(x = genotype, y = trait, title = paste(trait, "by", genotype)) +
-    ggplot2::theme_minimal() +
+    ggplot2::geom_boxplot(show.legend = FALSE, alpha = 0.85,
+                          outlier.color = "#34495E", color = "#2C3E50") +
+    ggplot2::scale_fill_manual(values = pb_palette("main", n)) +
+    ggplot2::labs(x = genotype, y = trait,
+                  title = paste(trait, "distribution by", genotype),
+                  subtitle = "Boxes ordered by median") +
+    pb_theme() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 }
 
@@ -145,25 +150,31 @@ pb_help <- function() {
   g$Genotype <- rownames(g)
   yval <- names(g)[1]
   ggplot2::ggplot(g, ggplot2::aes(x = stats::reorder(.data[["Genotype"]],
-                    .data[[yval]]), y = .data[[yval]])) +
-    ggplot2::geom_col(fill = "#2E9FDF") +
+                    .data[[yval]]), y = .data[[yval]],
+                    fill = .data[[yval]])) +
+    ggplot2::geom_col(show.legend = FALSE, width = 0.75) +
     ggplot2::geom_text(ggplot2::aes(label = .data[["groups"]]),
-                       vjust = -0.4, size = 3.5) +
+                       vjust = -0.4, size = 3.5, color = "#2C3E50",
+                       fontface = "bold") +
+    ggplot2::scale_fill_gradientn(colors = pb_palette("cool", 8)) +
     ggplot2::labs(x = "Genotype", y = paste("Mean", trait),
-                  title = "Ranked means with grouping letters") +
-    ggplot2::theme_minimal() +
+                  title = "Ranked means with grouping letters",
+                  subtitle = "Bars sharing a letter are not significantly different") +
+    pb_theme() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
 }
 
 .plot_diag <- function(model) {
   df <- data.frame(fitted = stats::fitted(model),
                    resid = stats::residuals(model))
-  ggplot2::ggplot(df, ggplot2::aes(fitted, resid)) +
-    ggplot2::geom_point(alpha = 0.7) +
-    ggplot2::geom_hline(yintercept = 0, linetype = 2, color = "red") +
+  ggplot2::ggplot(df, ggplot2::aes(.data$fitted, .data$resid)) +
+    ggplot2::geom_hline(yintercept = 0, linetype = 2, color = "#FC4E07",
+                        linewidth = 0.7) +
+    ggplot2::geom_point(alpha = 0.75, size = 2.4, color = "#2E9FDF") +
     ggplot2::geom_smooth(se = FALSE, method = "loess", formula = y ~ x,
-                         color = "#2E9FDF") +
+                         color = "#8E44AD", linewidth = 0.9) +
     ggplot2::labs(x = "Fitted values", y = "Residuals",
-                  title = "Residuals vs fitted (should be a flat cloud)") +
-    ggplot2::theme_minimal()
+                  title = "Residuals vs fitted",
+                  subtitle = "A flat, even cloud around zero means the model fits well") +
+    pb_theme()
 }

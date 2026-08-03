@@ -100,13 +100,16 @@ pb_manhattan <- function(map, pvalues, threshold = 5e-8) {
 
   ggplot2::ggplot(df, ggplot2::aes(x = .data$cum_pos, y = .data$logp,
                                    color = .data$Chr)) +
-    ggplot2::geom_point(size = 0.9, show.legend = FALSE) +
+    ggplot2::geom_point(size = 1.1, alpha = 0.85, show.legend = FALSE) +
     ggplot2::geom_hline(yintercept = -log10(threshold),
-                        linetype = 2, color = "red") +
+                        linetype = 2, color = "#FC4E07", linewidth = 0.7) +
+    ggplot2::scale_color_manual(
+      values = rep(pb_palette("main"), length.out = nlevels(df$Chr))) +
     ggplot2::scale_x_continuous(labels = axis_df$Chr, breaks = axis_df$cum_pos) +
     ggplot2::labs(x = "Chromosome", y = expression(-log[10](p)),
-                  title = "Manhattan plot") +
-    ggplot2::theme_minimal() +
+                  title = "Manhattan plot",
+                  subtitle = "Points above the dashed line pass the significance threshold") +
+    pb_theme() +
     ggplot2::theme(panel.grid.minor = ggplot2::element_blank())
 }
 
@@ -123,10 +126,12 @@ pb_qqplot <- function(pvalues) {
     observed = -log10(p)
   )
   ggplot2::ggplot(df, ggplot2::aes(.data$expected, .data$observed)) +
-    ggplot2::geom_point(size = 0.9) +
-    ggplot2::geom_abline(slope = 1, intercept = 0, color = "red", linetype = 2) +
+    ggplot2::geom_abline(slope = 1, intercept = 0, color = "#FC4E07",
+                         linetype = 2, linewidth = 0.7) +
+    ggplot2::geom_point(size = 1.1, alpha = 0.8, color = "#2E9FDF") +
     ggplot2::labs(x = expression(Expected~-log[10](p)),
                   y = expression(Observed~-log[10](p)),
-                  title = "QQ plot") +
-    ggplot2::theme_minimal()
+                  title = "QQ plot",
+                  subtitle = "Points on the line indicate well-calibrated p-values") +
+    pb_theme()
 }

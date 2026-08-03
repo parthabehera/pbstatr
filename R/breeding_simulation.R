@@ -76,10 +76,13 @@ pb_sim_pipeline <- function(sim, cycles = 10, n_select = 20, n_cross = 100,
 #' @export
 pb_plot_gain <- function(pipeline) {
   df <- pipeline$summary
-  ggplot2::ggplot(df, ggplot2::aes(cycle, meanG)) +
-    ggplot2::geom_line(color = "#2E9FDF", linewidth = 1) +
-    ggplot2::geom_point(size = 2) +
+  ggplot2::ggplot(df, ggplot2::aes(.data$cycle, .data$meanG)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = min(df$meanG), ymax = .data$meanG),
+                         fill = "#2E9FDF", alpha = 0.12) +
+    ggplot2::geom_line(color = "#2E9FDF", linewidth = 1.1) +
+    ggplot2::geom_point(size = 2.6, color = "#16A085") +
     ggplot2::labs(x = "Breeding cycle", y = "Mean genetic value",
-                  title = "Simulated genetic gain") +
-    ggplot2::theme_minimal()
+                  title = "Simulated genetic gain",
+                  subtitle = "Mean breeding value across selection cycles") +
+    pb_theme()
 }

@@ -32,9 +32,9 @@ pb_path_analysis <- function(data, dependent, causal) {
   diag(indirect) <- 0
   residual <- sqrt(max(0, 1 - sum(direct * r_y)))
   list(
-    direct = setNames(as.vector(direct), causal),
+    direct = stats::setNames(as.vector(direct), causal),
     indirect = indirect,
-    correlation_with_dependent = setNames(as.vector(r_y), causal),
+    correlation_with_dependent = stats::setNames(as.vector(r_y), causal),
     residual = residual
   )
 }

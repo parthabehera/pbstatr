@@ -122,8 +122,8 @@ pb_generation_mean <- function(means, variances) {
   covb <- solve(AtW %*% A)
   se <- sqrt(diag(covb))
   list(
-    estimates = setNames(as.vector(beta), colnames(A)),
-    std_errors = setNames(se, colnames(A)),
+    estimates = stats::setNames(as.vector(beta), colnames(A)),
+    std_errors = stats::setNames(se, colnames(A)),
     t_values = as.vector(beta) / se
   )
 }

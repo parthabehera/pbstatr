@@ -145,6 +145,7 @@ pb_gge <- function(data, gen, env, trait) {
 #' Print method for a pb_gxe result
 #' @param x A `pb_gxe` object.
 #' @param ... Ignored.
+#' @return The input `x`, invisibly.
 #' @export
 print.pb_gxe <- function(x, ...) {
   cat("<pb_gxe> genotype x environment analysis\n")
@@ -154,4 +155,65 @@ print.pb_gxe <- function(x, ...) {
                 x$joint_anova$gxe_pvalue))
   cat("Access components with $ (e.g. result$regression, result$shukla).\n")
   invisible(x)
+}
+
+#' Genotype x environment interaction heatmap
+#'
+#' A colourful heatmap of genotype means across environments, with genotypes
+#' and environments reordered by clustering so that adaptation patterns and
+#' "which-won-where" blocks stand out at a glance.
+#'
+#' @param data Long-format multi-environment data.
+#' @param gen,env Column names for genotype and environment.
+#' @param trait Response trait column name.
+#' @param scale One of "none" (raw means), "genotype" (centre each genotype) or
+#'   "environment" (centre each environment). Centring highlights interaction.
+#' @param cluster Reorder rows/columns by hierarchical clustering.
+#' @return A `ggplot` object.
+#' @export
+pb_gxe_heatmap <- function(data, gen, env, trait,
+                           scale = c("none", "genotype", "environment"),
+                           cluster = TRUE) {
+  scale <- match.arg(scale)
+  M <- stats::aggregate(data[[trait]],
+         list(gen = data[[gen]], env = data[[env]]), mean, na.rm = TRUE)
+  W <- stats::reshape(M, idvar = "gen", timevar = "env", direction = "wide")
+  rn <- W$gen; W$gen <- NULL
+  W <- as.matrix(W); rownames(W) <- rn
+  colnames(W) <- sub("^x\\.", "", colnames(W))
+
+  if (scale == "genotype")    W <- t(scale(t(W), center = TRUE, scale = FALSE))
+  if (scale == "environment") W <- scale(W, center = TRUE, scale = FALSE)
+
+  if (cluster && nrow(W) > 2 && ncol(W) > 2) {
+    ro <- stats::hclust(stats::dist(W))$order
+    co <- stats::hclust(stats::dist(t(W)))$order
+    W <- W[ro, co, drop = FALSE]
+  }
+
+  df <- as.data.frame(as.table(W))
+  names(df) <- c("Genotype", "Environment", "value")
+  fill_name <- switch(scale, none = trait,
+                      genotype = "centred", environment = "centred")
+  cols <- if (scale == "none") pb_palette("viridis")
+          else pb_palette("diverging")
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(.data$Environment, .data$Genotype,
+                                        fill = .data$value)) +
+    ggplot2::geom_tile(color = "grey95", linewidth = 0.3) +
+    ggplot2::labs(title = "Genotype \u00d7 environment heatmap",
+                  subtitle = if (scale == "none")
+                    "Mean performance in each environment"
+                    else "Centred means \u2014 red/blue blocks reveal interaction",
+                  fill = fill_name) +
+    pb_theme() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+                   panel.grid = ggplot2::element_blank())
+
+  if (scale == "none") {
+    p + ggplot2::scale_fill_gradientn(colors = cols)
+  } else {
+    p + ggplot2::scale_fill_gradient2(low = "#2166AC", mid = "#F7F7F7",
+                                      high = "#B2182B", midpoint = 0)
+  }
 }

@@ -84,14 +84,17 @@ pb_stability_ranks <- function(data, gen, env, rep, trait,
 #' @export
 pb_plot_stability <- function(ranks) {
   ggplot2::ggplot(ranks, ggplot2::aes(x = .data$Mean, y = .data$mean_rank)) +
-    ggplot2::geom_point(ggplot2::aes(color = .data$overall_rank), size = 3,
-                        show.legend = FALSE) +
+    ggplot2::geom_point(ggplot2::aes(color = .data$overall_rank,
+                                     size = .data$Mean), show.legend = FALSE) +
     ggplot2::geom_text(ggplot2::aes(label = .data$Genotype),
-                       vjust = -0.8, size = 3.3) +
+                       vjust = -0.9, size = 3.3, color = "#2C3E50",
+                       fontface = "bold") +
+    ggplot2::scale_color_gradientn(colors = pb_palette("main", 8)) +
+    ggplot2::scale_size_continuous(range = c(2.5, 6)) +
     ggplot2::scale_y_reverse() +
-    ggplot2::labs(x = paste("Mean performance"),
+    ggplot2::labs(x = "Mean performance",
                   y = "Average stability rank (lower = more stable)",
                   title = "Mean vs stability",
-                  subtitle = "Ideal genotypes: high mean, low stability rank") +
-    ggplot2::theme_minimal()
+                  subtitle = "Ideal genotypes: high mean, low stability rank (lower-right)") +
+    pb_theme()
 }

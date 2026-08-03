@@ -47,6 +47,7 @@ pb_stability <- function(data, env, gen, rep, trait,
 
 #' AMMI model (Additive Main effects and Multiplicative Interaction)
 #' @inheritParams pb_stability
+#' @return A `metan` AMMI model object (from `metan::performs_ammi`).
 #' @export
 pb_ammi <- function(data, env, gen, rep, trait) {
   metan::performs_ammi(
@@ -60,6 +61,7 @@ pb_ammi <- function(data, env, gen, rep, trait) {
 
 #' WAASB (Weighted Average of Absolute Scores from BLUP)
 #' @inheritParams pb_stability
+#' @return A `metan` WAASB object (from `metan::waasb`).
 #' @export
 pb_waasb <- function(data, env, gen, rep, trait) {
   metan::waasb(
@@ -73,6 +75,7 @@ pb_waasb <- function(data, env, gen, rep, trait) {
 
 #' Eberhart & Russell regression stability model
 #' @inheritParams pb_stability
+#' @return A `metan` regression object (from `metan::ge_reg`).
 #' @export
 pb_eberhart_russell <- function(data, env, gen, rep, trait) {
   metan::ge_reg(

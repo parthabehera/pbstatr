@@ -11,6 +11,7 @@ design_crd <- function(treatments, r, seed = NULL) {
 
 #' Randomised Complete Block Design layout
 #' @inheritParams design_crd
+#' @return A data frame containing the randomised field book (plot layout).
 #' @export
 design_rcbd <- function(treatments, r, seed = NULL) {
   agricolae::design.rcbd(trt = treatments, r = r, seed = seed %||% 0)$book
@@ -19,6 +20,7 @@ design_rcbd <- function(treatments, r, seed = NULL) {
 #' Latin Square Design layout
 #' @param treatments Character/numeric vector of treatment labels.
 #' @param seed Optional RNG seed.
+#' @return A data frame containing the randomised field book (plot layout).
 #' @export
 design_lsd <- function(treatments, seed = NULL) {
   agricolae::design.lsd(trt = treatments, seed = seed %||% 0)$book
@@ -29,6 +31,7 @@ design_lsd <- function(treatments, seed = NULL) {
 #' @param r Number of replications.
 #' @param design Base design: "rcbd" or "crd".
 #' @param seed Optional RNG seed.
+#' @return A data frame containing the randomised field book (plot layout).
 #' @export
 design_factorial <- function(factor_levels, r, design = "rcbd", seed = NULL) {
   agricolae::design.ab(trt = lengths(factor_levels), r = r,
@@ -40,6 +43,7 @@ design_factorial <- function(factor_levels, r, design = "rcbd", seed = NULL) {
 #' @param sub Vector of sub-plot treatment labels.
 #' @param r Number of replications.
 #' @param seed Optional RNG seed.
+#' @return A data frame containing the randomised field book (plot layout).
 #' @export
 design_split_plot <- function(main, sub, r, seed = NULL) {
   agricolae::design.split(trt1 = main, trt2 = sub, r = r,
@@ -51,6 +55,7 @@ design_split_plot <- function(main, sub, r, seed = NULL) {
 #' @param k Block size.
 #' @param r Number of replications.
 #' @param seed Optional RNG seed.
+#' @return A data frame containing the randomised field book (plot layout).
 #' @export
 design_alpha_lattice <- function(treatments, k, r, seed = NULL) {
   agricolae::design.alpha(trt = treatments, k = k, r = r, seed = seed %||% 0)$book
@@ -61,6 +66,7 @@ design_alpha_lattice <- function(treatments, k, r, seed = NULL) {
 #' @param new Vector of new/test treatment labels.
 #' @param r Number of blocks.
 #' @param seed Optional RNG seed.
+#' @return A data frame containing the randomised field book (plot layout).
 #' @export
 design_augmented <- function(checks, new, r, seed = NULL) {
   agricolae::design.dau(trt1 = checks, trt2 = new, r = r, seed = seed %||% 0)$book

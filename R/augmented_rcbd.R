@@ -52,7 +52,7 @@ pb_augmented_multi <- function(data, block, treatment, traits, checks = NULL) {
 
   means <- lapply(traits, function(tr) {
     am <- analyses[[tr]]$Means
-    data.frame(Treatment = am$Treatment, setNames(list(am$`Adjusted Means`), tr),
+    data.frame(Treatment = am$Treatment, stats::setNames(list(am$`Adjusted Means`), tr),
                check.names = FALSE)
   })
   merged <- Reduce(function(a, b) merge(a, b, by = "Treatment", all = TRUE), means)

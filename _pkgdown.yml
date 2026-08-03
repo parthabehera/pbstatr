@@ -1,0 +1,44 @@
+url: https://yourusername.github.io/PbStatR
+template:
+  bootstrap: 5
+reference:
+- title: Start here (student-friendly)
+  desc: One-call analysis, reporting, and discovery helpers for beginners.
+  contents: [pb_analyze, pb_report, pb_summary, pb_help]
+- title: Genetic variability
+  contents: [pb_anova, pb_genetic_params]
+- title: Post-hoc tests & diagnostics
+  contents: [pb_posthoc, pb_assumptions]
+- title: Associations & diversity
+  contents: [pb_correlation, pb_path_analysis, pb_diversity, pb_diversity_indices, pb_molecular_diversity]
+- title: Multivariate & visualization
+  contents: [pb_pca, pb_hcpc, pb_heatmap, pb_data_heatmap]
+- title: Colourful visuals (theme & palettes)
+  desc: Shared theme, palettes, and extra heatmaps used across the package.
+  contents: [pb_theme, pb_palette, pb_scale, pb_gxe_heatmap]
+- title: Experimental designs (agricolae)
+  contents: [starts_with("design_")]
+- title: Field designs & maps (FielDHub)
+  contents: [field_crd, field_rcbd, field_alpha, field_augmented, field_map]
+- title: MET & stability
+  contents: [pb_met, pb_selection_index, pb_stability, pb_ammi, pb_waasb, pb_eberhart_russell]
+- title: Biometrical genetics
+  contents: [pb_line_tester, pb_diallel, pb_griffing, pb_generation_mean]
+- title: Mixed models & genomic selection
+  contents: [pb_blup, pb_grm, pb_gblup, pb_select]
+- title: Molecular & advanced
+  contents: [pb_gwas, pb_qtl, pb_envirotype, pb_bayesian]
+- title: Breeding simulation
+  contents: [pb_sim_founders, pb_sim_pipeline, pb_plot_gain]
+- title: GWAS engines & marker maps
+  contents: [pb_gwas_rmvp, pb_gwas_gapit, pb_marker_map, pb_manhattan, pb_qqplot]
+- title: Comprehensive genotype x environment
+  contents: [pb_gxe, pb_gxe_anova, pb_gxe_regression, pb_shukla, pb_ecovalence, pb_gge]
+- title: Machine learning
+  contents: [pb_ml_predict, pb_ml_compare]
+- title: Augmented designs (augmentedRCBD)
+  contents: [pb_augmented, pb_augmented_multi]
+- title: Combined stability ranking
+  contents: [pb_stability_ranks, pb_plot_stability]
+- title: Example datasets
+  contents: [pb_data, pb_data_causal]

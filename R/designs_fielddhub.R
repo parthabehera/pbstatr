@@ -106,15 +106,20 @@ field_map <- function(fieldbook) {
   df <- data.frame(ROW = row, COLUMN = col,
                    TRT = as.factor(trt),
                    PLOT = if (is.null(plt)) NA else plt)
+  n <- nlevels(df$TRT)
   ggplot2::ggplot(df, ggplot2::aes(x = .data$COLUMN, y = .data$ROW,
                                    fill = .data$TRT)) +
-    ggplot2::geom_tile(color = "white", linewidth = 0.6) +
+    ggplot2::geom_tile(color = "white", linewidth = 0.8) +
     { if (!all(is.na(df$PLOT)))
-        ggplot2::geom_text(ggplot2::aes(label = .data$PLOT), size = 3) } +
+        ggplot2::geom_text(ggplot2::aes(label = .data$PLOT), size = 3,
+                           color = "#2C3E50") } +
+    ggplot2::scale_fill_manual(values = pb_palette("field", n)) +
     ggplot2::scale_y_reverse() +
+    ggplot2::coord_equal() +
     ggplot2::labs(x = "Column", y = "Row", fill = "Treatment",
-                  title = "Field layout map") +
-    ggplot2::theme_minimal() +
+                  title = "Field layout map",
+                  subtitle = "Plot numbers shown inside each cell") +
+    pb_theme() +
     ggplot2::theme(panel.grid = ggplot2::element_blank())
 }
 

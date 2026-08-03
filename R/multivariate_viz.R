@@ -74,15 +74,20 @@ pb_heatmap <- function(data, traits = NULL, method = "pearson", lab = TRUE) {
   df <- as.data.frame(as.table(M))
   names(df) <- c("Var1", "Var2", "value")
 
-  ggplot2::ggplot(df, ggplot2::aes(Var1, Var2, fill = value)) +
-    ggplot2::geom_tile(color = "white") +
+  ggplot2::ggplot(df, ggplot2::aes(.data$Var1, .data$Var2, fill = .data$value)) +
+    ggplot2::geom_tile(color = "white", linewidth = 0.8) +
     { if (lab) ggplot2::geom_text(
-        ggplot2::aes(label = sprintf("%.2f", value)), size = 3) } +
-    ggplot2::scale_fill_gradient2(low = "#2166AC", mid = "white",
+        ggplot2::aes(label = sprintf("%.2f", .data$value)), size = 3,
+        color = "#2C3E50", fontface = "bold") } +
+    ggplot2::scale_fill_gradient2(low = "#2166AC", mid = "#F7F7F7",
         high = "#B2182B", midpoint = 0, limits = c(-1, 1), name = "r") +
-    ggplot2::theme_minimal() +
+    ggplot2::coord_fixed() +
+    ggplot2::labs(title = "Trait correlation heatmap",
+                  subtitle = "Hierarchically ordered; blue = negative, red = positive") +
+    pb_theme() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
-                   axis.title = ggplot2::element_blank())
+                   axis.title = ggplot2::element_blank(),
+                   panel.grid = ggplot2::element_blank())
 }
 
 #' Clustered data heatmap (genotype x trait)
@@ -108,12 +113,15 @@ pb_data_heatmap <- function(data, traits, id = NULL, scale = "column") {
 
   df <- as.data.frame(as.table(as.matrix(X)))
   names(df) <- c("Genotype", "Trait", "z")
-  ggplot2::ggplot(df, ggplot2::aes(Trait, Genotype, fill = z)) +
-    ggplot2::geom_tile() +
-    ggplot2::scale_fill_gradient2(low = "#4575B4", mid = "#FFFFBF",
-        high = "#D73027", midpoint = 0, name = "z-score") +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+  ggplot2::ggplot(df, ggplot2::aes(.data$Trait, .data$Genotype, fill = .data$z)) +
+    ggplot2::geom_tile(color = "grey95", linewidth = 0.3) +
+    ggplot2::scale_fill_gradientn(colors = pb_palette("viridis"),
+                                  name = "z-score") +
+    ggplot2::labs(title = "Genotype \u00d7 trait heatmap",
+                  subtitle = "Rows and columns clustered by similarity") +
+    pb_theme() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+                   panel.grid = ggplot2::element_blank())
 }
 
 #' Diversity indices for categorical / count data
