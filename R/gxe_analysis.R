@@ -202,6 +202,7 @@ pb_gxe_heatmap <- function(data, gen, env, trait,
                                         fill = .data$value)) +
     ggplot2::geom_tile(color = "grey95", linewidth = 0.3) +
     ggplot2::labs(title = "Genotype \u00d7 environment heatmap",
+                  x = "Environment", y = "Genotype",
                   subtitle = if (scale == "none")
                     "Mean performance in each environment"
                     else "Centred means \u2014 red/blue blocks reveal interaction",

@@ -83,18 +83,28 @@ pb_stability_ranks <- function(data, gen, env, rep, trait,
 #' @return A `ggplot` object.
 #' @export
 pb_plot_stability <- function(ranks) {
+  mx <- mean(ranks$Mean, na.rm = TRUE)
+  my <- mean(ranks$mean_rank, na.rm = TRUE)
   ggplot2::ggplot(ranks, ggplot2::aes(x = .data$Mean, y = .data$mean_rank)) +
+    ggplot2::annotate("rect", xmin = mx, xmax = Inf, ymin = -Inf, ymax = my,
+                      fill = "#00AF66", alpha = 0.07) +
+    ggplot2::geom_vline(xintercept = mx, linetype = 2, color = "#B0B8C1") +
+    ggplot2::geom_hline(yintercept = my, linetype = 2, color = "#B0B8C1") +
     ggplot2::geom_point(ggplot2::aes(color = .data$overall_rank,
-                                     size = .data$Mean), show.legend = FALSE) +
+                                     size = .data$Mean), show.legend = FALSE,
+                        alpha = 0.9) +
     ggplot2::geom_text(ggplot2::aes(label = .data$Genotype),
-                       vjust = -0.9, size = 3.3, color = "#2C3E50",
+                       vjust = -0.9, size = 3.2, color = "#2C3E50",
                        fontface = "bold") +
-    ggplot2::scale_color_gradientn(colors = pb_palette("main", 8)) +
-    ggplot2::scale_size_continuous(range = c(2.5, 6)) +
+    ggplot2::annotate("text", x = Inf, y = -Inf, label = "ideal",
+                      hjust = 1.2, vjust = -1, size = 3.4,
+                      fontface = "italic", color = "#00875A") +
+    ggplot2::scale_color_gradientn(colors = pb_palette("sunset", 8)) +
+    ggplot2::scale_size_continuous(range = c(2.5, 7)) +
     ggplot2::scale_y_reverse() +
     ggplot2::labs(x = "Mean performance",
                   y = "Average stability rank (lower = more stable)",
                   title = "Mean vs stability",
-                  subtitle = "Ideal genotypes: high mean, low stability rank (lower-right)") +
+                  subtitle = "Green quadrant = ideal genotypes (high mean, high stability)") +
     pb_theme()
 }

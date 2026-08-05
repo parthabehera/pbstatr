@@ -10,6 +10,9 @@
 #' * `"field"` — earthy greens and golds, for field-layout maps.
 #' * `"viridis"` — perceptually uniform, good for continuous fills.
 #' * `"diverging"` — blue-white-red, for correlations (centred at zero).
+#' * `"manhattan"` — two alternating tones for Manhattan plots.
+#' * `"spectral"` — rainbow spectral, ordered continuous emphasis.
+#' * `"sunset"` — deep-blue to gold, good for sequential categories.
 #'
 #' @param name Palette name.
 #' @param n Number of colours to return (interpolated if needed). NULL returns
@@ -30,7 +33,11 @@ pb_palette <- function(name = "main", n = NULL, reverse = FALSE) {
               "#C9A227"),
     viridis = c("#440154", "#3B528B", "#21908C", "#5DC863", "#FDE725"),
     diverging = c("#2166AC", "#67A9CF", "#D1E5F0", "#F7F7F7",
-                  "#FDDBC7", "#EF8A62", "#B2182B")
+                  "#FDDBC7", "#EF8A62", "#B2182B"),
+    manhattan = c("#2E5A87", "#5AAE61"),
+    spectral = c("#5E4FA2", "#3288BD", "#66C2A5", "#ABDDA4", "#E6F598",
+                 "#FEE08B", "#FDAE61", "#F46D43", "#D53E4F", "#9E0142"),
+    sunset = c("#003F5C", "#58508D", "#BC5090", "#FF6361", "#FFA600")
   )
   cols <- pals[[name]]
   if (is.null(cols)) stop("Unknown palette '", name, "'. Options: ",

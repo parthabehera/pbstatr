@@ -1,0 +1,60 @@
+url: https://parthabehera.github.io/PbStatR
+template:
+  bootstrap: 5
+reference:
+- title: Start here (student-friendly)
+  desc: One-call analysis, reporting, and discovery helpers for beginners.
+  contents: [pb_analyze, pb_report, pb_summary, pb_help, pb_explore, pb_workflow, pb_genetic_dashboard]
+- title: Quantitative genetics
+  desc: Heritability, variance components, breeder's equation, genetic gain.
+  contents: [pb_varcomp, pb_heritability, pb_breeders_eqn, pb_genetic_advance, pb_realized_h2, pb_selection_intensity, pb_plot_selection]
+- title: Augmented design (novel workflow)
+  contents: [pb_aug_analyze]
+- title: Student guide
+  contents: [pb_guide, pb_explain]
+- title: Genetic variability
+  contents: [pb_anova, pb_genetic_params]
+- title: Publication ANOVA (all designs)
+  desc: Formatted ANOVA for every experimental design, with diagnostic plots.
+  contents: [pb_aov_design, pb_aov_plots, pb_aov_barplot]
+- title: Post-hoc tests & diagnostics
+  contents: [pb_posthoc, pb_assumptions]
+- title: Associations & diversity
+  contents: [pb_correlation, pb_path_analysis, pb_diversity, pb_diversity_indices, pb_molecular_diversity]
+- title: Multivariate & visualization
+  contents: [pb_pca, pb_hcpc, pb_heatmap, pb_data_heatmap]
+- title: Colourful visuals (theme & palettes)
+  desc: Shared theme, palettes, and extra heatmaps used across the package.
+  contents: [pb_theme, pb_palette, pb_scale, pb_gxe_heatmap]
+- title: Experimental designs (agricolae)
+  contents: [starts_with("design_")]
+- title: Field designs & maps (FielDHub)
+  contents: [field_crd, field_rcbd, field_alpha, field_augmented, field_map]
+- title: MET & stability
+  contents: [pb_met, pb_selection_index, pb_stability, pb_ammi, pb_waasb, pb_eberhart_russell]
+- title: Multi-trait selection & metan plots
+  desc: MGIDI, MTSI, FAI-BLUP, Smith-Hazel, and the metan visualisations.
+  contents: [pb_mgidi, pb_mtsi, pb_fai_blup, pb_smith_hazel, pb_get_results, pb_radar_plot, pb_venn_plot, pb_waasb_xy_plot, pb_waasby_plot, pb_blup_plot]
+- title: Biometrical genetics
+  contents: [pb_line_tester, pb_diallel, pb_griffing, pb_generation_mean]
+- title: Mixed models & genomic selection
+  contents: [pb_blup, pb_grm, pb_gblup, pb_select]
+- title: Molecular & advanced
+  contents: [pb_gwas, pb_qtl, pb_envirotype, pb_bayesian]
+- title: Bayesian MET (ProbBreed)
+  desc: Bayesian probability of superior performance and stability.
+  contents: [pb_bayes_met, pb_bayes_extract, pb_bayes_prob, pb_bayes_diag_plot, pb_bayes_prob_plot, pb_bayes_ranking, pb_bayes_prob_bars]
+- title: Breeding simulation
+  contents: [pb_sim_founders, pb_sim_pipeline, pb_plot_gain]
+- title: GWAS engines & marker maps
+  contents: [pb_gwas_rmvp, pb_gwas_gapit, pb_marker_map, pb_manhattan, pb_qqplot]
+- title: Comprehensive genotype x environment
+  contents: [pb_gxe, pb_gxe_anova, pb_gxe_regression, pb_shukla, pb_ecovalence, pb_gge]
+- title: Machine learning
+  contents: [pb_ml_predict, pb_ml_compare]
+- title: Augmented designs (augmentedRCBD)
+  contents: [pb_augmented, pb_augmented_multi]
+- title: Combined stability ranking
+  contents: [pb_stability_ranks, pb_plot_stability]
+- title: Example datasets
+  contents: [pb_data, pb_data_causal]

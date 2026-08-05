@@ -96,21 +96,36 @@ pb_manhattan <- function(map, pvalues, threshold = 5e-8) {
   df <- data.frame(cum_pos = map$cum_pos,
                    Chr = as.factor(map$Chr),
                    logp = -log10(pvalues))
+  df$sig <- df$logp >= -log10(threshold)
+  suggestive <- -log10(1e-5)
   axis_df <- stats::aggregate(cum_pos ~ Chr, df, function(x) mean(range(x)))
+  ymax <- max(df$logp, -log10(threshold), na.rm = TRUE) * 1.08
 
-  ggplot2::ggplot(df, ggplot2::aes(x = .data$cum_pos, y = .data$logp,
-                                   color = .data$Chr)) +
-    ggplot2::geom_point(size = 1.1, alpha = 0.85, show.legend = FALSE) +
+  # alternating two-tone chromosomes; significant hits highlighted on top
+  ggplot2::ggplot(df, ggplot2::aes(x = .data$cum_pos, y = .data$logp)) +
+    ggplot2::geom_hline(yintercept = suggestive, linetype = 3,
+                        color = "#95A5A6", linewidth = 0.6) +
     ggplot2::geom_hline(yintercept = -log10(threshold),
-                        linetype = 2, color = "#FC4E07", linewidth = 0.7) +
+                        linetype = 2, color = "#FC4E07", linewidth = 0.8) +
+    ggplot2::geom_point(ggplot2::aes(color = .data$Chr), size = 1.3,
+                        alpha = 0.85, show.legend = FALSE) +
+    ggplot2::geom_point(data = df[df$sig, , drop = FALSE],
+                        color = "#B2182B", size = 2.6, alpha = 0.95) +
+    ggplot2::annotate("text", x = min(df$cum_pos), y = -log10(threshold),
+                      label = "genome-wide", hjust = -0.05, vjust = -0.5,
+                      size = 3, color = "#FC4E07", fontface = "italic") +
     ggplot2::scale_color_manual(
-      values = rep(pb_palette("main"), length.out = nlevels(df$Chr))) +
-    ggplot2::scale_x_continuous(labels = axis_df$Chr, breaks = axis_df$cum_pos) +
-    ggplot2::labs(x = "Chromosome", y = expression(-log[10](p)),
+      values = rep(pb_palette("manhattan"), length.out = nlevels(df$Chr))) +
+    ggplot2::scale_x_continuous(labels = axis_df$Chr, breaks = axis_df$cum_pos,
+                                expand = ggplot2::expansion(mult = 0.02)) +
+    ggplot2::scale_y_continuous(limits = c(0, ymax),
+                                expand = ggplot2::expansion(mult = c(0, 0.02))) +
+    ggplot2::labs(x = "Chromosome", y = expression(-log[10](italic(p))),
                   title = "Manhattan plot",
-                  subtitle = "Points above the dashed line pass the significance threshold") +
+                  subtitle = "Red points pass the genome-wide threshold; dotted line = suggestive (1e-5)") +
     pb_theme() +
-    ggplot2::theme(panel.grid.minor = ggplot2::element_blank())
+    ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank())
 }
 
 #' QQ plot of GWAS p-values
@@ -125,13 +140,25 @@ pb_qqplot <- function(pvalues) {
     expected = -log10(stats::ppoints(n)),
     observed = -log10(p)
   )
+  df <- df[order(df$expected), ]
+  ranks <- seq_len(n)
+  df$clower <- -log10(stats::qbeta(0.975, ranks, n - ranks + 1))
+  df$cupper <- -log10(stats::qbeta(0.025, ranks, n - ranks + 1))
+  chisq <- stats::qchisq(1 - p, 1)
+  lambda <- stats::median(chisq) / stats::qchisq(0.5, 1)
+
   ggplot2::ggplot(df, ggplot2::aes(.data$expected, .data$observed)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = .data$clower, ymax = .data$cupper),
+                         fill = "#2E9FDF", alpha = 0.15) +
     ggplot2::geom_abline(slope = 1, intercept = 0, color = "#FC4E07",
-                         linetype = 2, linewidth = 0.7) +
-    ggplot2::geom_point(size = 1.1, alpha = 0.8, color = "#2E9FDF") +
-    ggplot2::labs(x = expression(Expected~-log[10](p)),
-                  y = expression(Observed~-log[10](p)),
+                         linetype = 2, linewidth = 0.8) +
+    ggplot2::geom_point(size = 1.5, alpha = 0.85, color = "#2E5A87") +
+    ggplot2::annotate("text", x = min(df$expected), y = max(df$observed),
+                      label = sprintf("lambda == %.3f", lambda), parse = TRUE,
+                      hjust = 0, vjust = 1, size = 3.5, color = "#2C3E50") +
+    ggplot2::labs(x = expression(Expected~-log[10](italic(p))),
+                  y = expression(Observed~-log[10](italic(p))),
                   title = "QQ plot",
-                  subtitle = "Points on the line indicate well-calibrated p-values") +
+                  subtitle = "Shaded 95% band; points on the line = well-calibrated p-values") +
     pb_theme()
 }

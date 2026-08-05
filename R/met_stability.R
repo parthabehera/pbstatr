@@ -18,11 +18,16 @@ pb_met <- function(data, env, gen, rep, trait) {
   )
 }
 
-#' Multi-trait selection index (Smith-Hazel / FAI-BLUP style)
+#' Multi-trait selection index (FAI-BLUP; convenience wrapper)
+#'
+#' A thin convenience wrapper kept for backward compatibility. For the full
+#' family of multi-trait indices see [pb_fai_blup()], [pb_mgidi()],
+#' [pb_mtsi()] and [pb_smith_hazel()].
 #'
 #' @param met_object Output of [pb_met()] with multiple traits.
 #' @param ... Passed to [metan::fai_blup()].
-#' @return A selection index object.
+#' @return A `metan` `fai_blup` selection-index object.
+#' @seealso [pb_fai_blup()], [pb_mgidi()], [pb_mtsi()], [pb_smith_hazel()]
 #' @export
 pb_selection_index <- function(met_object, ...) {
   metan::fai_blup(met_object, ...)

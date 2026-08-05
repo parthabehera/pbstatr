@@ -73,14 +73,18 @@ pb_heatmap <- function(data, traits = NULL, method = "pearson", lab = TRUE) {
   M <- M[ord, ord]
   df <- as.data.frame(as.table(M))
   names(df) <- c("Var1", "Var2", "value")
+  df$txt <- ifelse(abs(df$value) > 0.6, "white", "#2C3E50")
 
   ggplot2::ggplot(df, ggplot2::aes(.data$Var1, .data$Var2, fill = .data$value)) +
-    ggplot2::geom_tile(color = "white", linewidth = 0.8) +
+    ggplot2::geom_tile(color = "white", linewidth = 1.1) +
     { if (lab) ggplot2::geom_text(
-        ggplot2::aes(label = sprintf("%.2f", .data$value)), size = 3,
-        color = "#2C3E50", fontface = "bold") } +
+        ggplot2::aes(label = sprintf("%.2f", .data$value),
+                     color = .data$txt), size = 3, fontface = "bold",
+        show.legend = FALSE) } +
+    ggplot2::scale_color_identity() +
     ggplot2::scale_fill_gradient2(low = "#2166AC", mid = "#F7F7F7",
-        high = "#B2182B", midpoint = 0, limits = c(-1, 1), name = "r") +
+        high = "#B2182B", midpoint = 0, limits = c(-1, 1), name = "r",
+        breaks = seq(-1, 1, 0.5)) +
     ggplot2::coord_fixed() +
     ggplot2::labs(title = "Trait correlation heatmap",
                   subtitle = "Hierarchically ordered; blue = negative, red = positive") +
@@ -118,6 +122,7 @@ pb_data_heatmap <- function(data, traits, id = NULL, scale = "column") {
     ggplot2::scale_fill_gradientn(colors = pb_palette("viridis"),
                                   name = "z-score") +
     ggplot2::labs(title = "Genotype \u00d7 trait heatmap",
+                  x = "Trait", y = "Genotype",
                   subtitle = "Rows and columns clustered by similarity") +
     pb_theme() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),

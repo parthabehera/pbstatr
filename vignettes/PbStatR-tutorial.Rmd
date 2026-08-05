@@ -1,0 +1,165 @@
+---
+title: "A complete analysis in five steps (student tutorial)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A complete analysis in five steps (student tutorial)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5, fig.align = "center"
+)
+```
+
+This tutorial takes you from a raw variety-trial dataset to a finished report,
+using nothing but the built-in example data. It is written for students and
+early-career researchers: every step is one short command, and you can copy the
+whole thing and run it top to bottom.
+
+The journey is:
+
+> **explore** → **analyse** → **visualise** → **report**
+
+```{r setup}
+library(PbStatR)
+```
+
+## The data
+
+PbStatR ships example datasets so you never have to hunt for one. We will use
+`"met"`, a multi-environment yield trial. For this first tutorial we focus on a
+**single environment** (a classic RCBD) to keep things simple.
+
+```{r data}
+trial <- pb_data("met")
+str(trial)
+
+# keep one environment -> a randomised complete block design (RCBD)
+rcbd <- droplevels(subset(trial, env == "E1"))
+head(rcbd)
+```
+
+We have `gen` (genotype/variety), `rep` (block), and two traits, `yield` and
+`height`. That is all you need for a full genetic analysis.
+
+## Step 1 — Explore: which function do I need?
+
+Not sure where to start? `pb_explore()` maps a research goal to the right
+function and shows a ready example. Give it a keyword:
+
+```{r explore}
+pb_explore("heritability")
+```
+
+Call it with no argument to see every goal the package covers, or try other
+keywords like `"stability"`, `"correlation"`, `"gwas"`, or `"selection"`.
+
+```{r explore-all, eval = FALSE}
+pb_explore()              # the full menu
+pb_explain("heritability") # plain-language definition of a term
+```
+
+If you prefer a ready-made recipe for your whole study, `pb_workflow()` prints
+copy-paste code:
+
+```{r workflow}
+pb_workflow("variety_trial")
+```
+
+## Step 2 — Analyse: one call does the standard analysis
+
+`pb_analyze()` runs the ANOVA, checks the assumptions, estimates heritability
+and the genetic parameters, groups the means with a post-hoc test, and explains
+the result in plain language. Everything is also returned for later use.
+
+```{r analyze}
+result <- pb_analyze(rcbd, trait = "yield",
+                     genotype = "gen", block = "rep")
+```
+
+The pieces are all there to inspect:
+
+```{r analyze-parts}
+result$genetic_params      # GCV, PCV, heritability, GAM ...
+head(result$means)         # ranked means with grouping letters
+```
+
+And it produced ready-to-use plots:
+
+```{r analyze-plots}
+result$plots$boxplot
+```
+
+```{r analyze-plots2}
+result$plots$means_bar
+```
+
+## Step 3 — Visualise: one figure that summarises the genetics
+
+`pb_genetic_dashboard()` packs the whole genetic summary into a single
+attractive figure: genotype means with error bars, a variance-partition donut
+with heritability in the centre, the genetic-parameter bars, and a heritability
+gauge.
+
+```{r dashboard, fig.height = 6}
+pb_genetic_dashboard(rcbd, "yield", "gen", "rep")
+```
+
+One picture, the complete story: how the varieties rank, how much of the
+variation is genetic, and whether selection is likely to work.
+
+## Step 4 — Dig deeper (optional)
+
+The same data supports much more. A few one-liners:
+
+```{r deeper, eval = FALSE}
+# trait relationships
+pb_correlation(rcbd, c("yield", "height"))
+pb_heatmap(rcbd, c("yield", "height"))
+
+# a publication-ready ANOVA table (any design)
+pb_aov_design(rcbd, "yield", design = "rcbd",
+              treatment = "gen", block = "rep")
+
+# post-hoc mean comparison on its own
+pb_posthoc(rcbd, "yield", "gen", "rep", method = "tukey")$groups
+```
+
+And if you use the **whole** multi-environment dataset, you unlock stability
+analysis:
+
+```{r met, eval = FALSE}
+pb_gxe(trial, gen = "gen", env = "env", rep = "rep", trait = "yield")
+ranks <- pb_stability_ranks(trial, "gen", "env", "rep", "yield",
+                            include_waasb = FALSE)
+pb_plot_stability(ranks)
+```
+
+## Step 5 — Report: one document to share
+
+When the analysis is done, `pb_report()` renders everything — summary, ANOVA,
+assumptions, genetic parameters, mean grouping, and (for multi-environment
+data) the stability section — into a single HTML or Word file.
+
+```{r report, eval = FALSE}
+# HTML report for the single environment
+pb_report(rcbd, "yield", genotype = "gen", block = "rep",
+          format = "html")
+
+# a fuller Word report using all environments (adds the G x E section)
+pb_report(trial, "yield", genotype = "gen", block = "rep", env = "env",
+          format = "word", title = "Yield trial 2024")
+```
+
+That is the entire workflow: **explore → analyse → visualise → report**, four
+commands from raw data to a shareable document.
+
+## Where to go next
+
+- `pb_help()` — the categorised menu of everything in the package.
+- `vignette("PbStatR-beginners")` — a gentler first look.
+- `vignette("PbStatR-gwas-stability")` — worked GWAS and stability examples.
+- `pb_explore("<your goal>")` — whenever you are unsure what to run next.
